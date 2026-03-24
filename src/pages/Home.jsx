@@ -25,41 +25,81 @@ const stories = [
   },
 ];
 
-const MousePixels = ({ containerRef }) => {
+const MousePixels = ({ containerRef, isExiting }) => {
   const canvasRef = useRef(null);
-  const pixelsRef = useRef([]);
-  const mouseRef = useRef({ x: 0, y: 0, isMoving: false });
-  const mouseTimeoutRef = useRef(null);
+  const gridPixelsRef = useRef([]);
+  const mouseTrailRef = useRef([]);
+  const mouseRef = useRef({ x: 0, y: 0 });
+  const lastMousePositionRef = useRef({ x: -1, y: -1 });
+
+  const GRID_SIZE = 12;
+  const PIXEL_SIZE = 8;
+  const GRID_GAP = 2;
+
+  // Initialize grid pixels
+  const initializeGrid = () => {
+    const newGrid = [];
+    for (let row = 0; row < GRID_SIZE; row++) {
+      for (let col = 0; col < GRID_SIZE; col++) {
+        newGrid.push({
+          row,
+          col,
+          x: col * (PIXEL_SIZE + GRID_GAP),
+          y: row * (PIXEL_SIZE + GRID_GAP),
+          isActive: false,
+          fadeTime: 0,
+        });
+      }
+    }
+    return newGrid;
+  };
 
   useEffect(() => {
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas || isExiting) return;
 
     const ctx = canvas.getContext("2d");
     canvas.width = window.innerWidth;
     canvas.height = window.innerHeight;
 
+    gridPixelsRef.current = initializeGrid();
+
     const handleMouseMove = (e) => {
       mouseRef.current.x = e.clientX;
       mouseRef.current.y = e.clientY;
-      mouseRef.current.isMoving = true;
 
-      // Create pixels at mouse position
-      for (let i = 0; i < 3; i++) {
-        pixelsRef.current.push({
-          x: e.clientX + (Math.random() - 0.5) * 20,
-          y: e.clientY + (Math.random() - 0.5) * 20,
-          vx: (Math.random() - 0.5) * 2,
-          vy: (Math.random() - 0.5) * 2 - 0.5,
+      const distance = Math.hypot(
+        e.clientX - lastMousePositionRef.current.x,
+        e.clientY - lastMousePositionRef.current.y
+      );
+
+      if (distance > 5) {
+        // Add to trail
+        mouseTrailRef.current.push({
+          x: e.clientX,
+          y: e.clientY,
           life: 1,
-          size: Math.random() * 3 + 2,
         });
+        lastMousePositionRef.current = { x: e.clientX, y: e.clientY };
       }
 
-      clearTimeout(mouseTimeoutRef.current);
-      mouseTimeoutRef.current = setTimeout(() => {
-        mouseRef.current.isMoving = false;
-      }, 100);
+      // Activate grid pixels near mouse
+      const gridCenterX = canvas.width / 2 - (GRID_SIZE * (PIXEL_SIZE + GRID_GAP)) / 2;
+      const gridCenterY = canvas.height / 2 - (GRID_SIZE * (PIXEL_SIZE + GRID_GAP)) / 2;
+
+      gridPixelsRef.current.forEach((pixel) => {
+        const pixelX = gridCenterX + pixel.x + PIXEL_SIZE / 2;
+        const pixelY = gridCenterY + pixel.y + PIXEL_SIZE / 2;
+        const dist = Math.hypot(pixelX - e.clientX, pixelY - e.clientY);
+
+        if (dist < 80) {
+          pixel.isActive = true;
+          pixel.fadeTime = 1;
+        } else {
+          pixel.fadeTime = Math.max(0, pixel.fadeTime - 0.02);
+          if (pixel.fadeTime === 0) pixel.isActive = false;
+        }
+      });
     };
 
     const handleWindowResize = () => {
@@ -73,15 +113,29 @@ const MousePixels = ({ containerRef }) => {
     const animate = () => {
       ctx.clearRect(0, 0, canvas.width, canvas.height);
 
-      pixelsRef.current = pixelsRef.current.filter((pixel) => {
-        pixel.x += pixel.vx;
-        pixel.y += pixel.vy;
-        pixel.life -= 0.02;
-        pixel.vy -= 0.1; // gravity
+      const gridCenterX = canvas.width / 2 - (GRID_SIZE * (PIXEL_SIZE + GRID_GAP)) / 2;
+      const gridCenterY = canvas.height / 2 - (GRID_SIZE * (PIXEL_SIZE + GRID_GAP)) / 2;
 
-        if (pixel.life > 0) {
-          ctx.fillStyle = `rgba(163, 230, 53, ${pixel.life * 0.8})`;
-          ctx.fillRect(pixel.x, pixel.y, pixel.size, pixel.size);
+      // Draw grid
+      gridPixelsRef.current.forEach((pixel) => {
+        const x = gridCenterX + pixel.x;
+        const y = gridCenterY + pixel.y;
+
+        if (pixel.fadeTime > 0) {
+          ctx.fillStyle = `rgba(163, 230, 53, ${pixel.fadeTime * 0.9})`;
+          ctx.fillRect(x, y, PIXEL_SIZE, PIXEL_SIZE);
+        } else {
+          ctx.fillStyle = "rgba(200, 200, 200, 0.15)";
+          ctx.fillRect(x, y, PIXEL_SIZE, PIXEL_SIZE);
+        }
+      });
+
+      // Draw trail
+      mouseTrailRef.current = mouseTrailRef.current.filter((point) => {
+        point.life -= 0.03;
+        if (point.life > 0) {
+          ctx.fillStyle = `rgba(163, 230, 53, ${point.life * 0.6})`;
+          ctx.fillRect(point.x - 2, point.y - 2, 4, 4);
           return true;
         }
         return false;
@@ -95,9 +149,8 @@ const MousePixels = ({ containerRef }) => {
     return () => {
       window.removeEventListener("mousemove", handleMouseMove);
       window.removeEventListener("resize", handleWindowResize);
-      clearTimeout(mouseTimeoutRef.current);
     };
-  }, []);
+  }, [isExiting]);
 
   return (
     <canvas
@@ -114,11 +167,17 @@ const PageTransition = ({ isExiting }) => {
     if (isExiting && transitionRef.current) {
       gsap.fromTo(
         transitionRef.current,
-        { x: "-100%" },
+        { x: "-100%", opacity: 1 },
         {
           x: "0%",
           duration: 0.8,
           ease: "elastic.out(1, 0.5)",
+          onComplete: () => {
+            // Hide the transition overlay after animation completes
+            if (transitionRef.current) {
+              transitionRef.current.style.display = "none";
+            }
+          },
         }
       );
     }
@@ -255,7 +314,7 @@ export default function Home() {
       ref={containerRef}
       className="min-h-screen bg-white overflow-hidden relative"
     >
-      <MousePixels containerRef={containerRef} />
+      <MousePixels containerRef={containerRef} isExiting={isExiting} />
       <PageTransition isExiting={isExiting} />
 
       {/* Main content */}
@@ -273,13 +332,13 @@ export default function Home() {
               </h1>
 
               <div ref={buttonRef} className="flex gap-4 items-start">
-                <Button
+                <button
                   onClick={() => handleNavigate("/visor")}
-                  className="bg-black hover:bg-gray-900 text-white font-semibold px-8 py-3 flex items-center gap-2 group"
+                  className="bg-black hover:bg-gray-900 text-white font-semibold px-8 py-3 flex items-center gap-2 group rounded"
                 >
                   Ver Lista
                   <ChevronRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-                </Button>
+                </button>
               </div>
 
               {/* Stories section */}
