@@ -333,7 +333,7 @@ export default function Home() {
             >
               <div className="mb-8">
                 <div className="flex items-center gap-3 mb-6">
-                  <span className="text-2xl">🍃</span>
+                  <img src="/img/logos1.svg" alt="Logo" className="w-8 h-8" />
                   <span className="text-sm font-semibold text-gray-600">
                     BID LAB | C MINDS
                   </span>
@@ -351,12 +351,10 @@ export default function Home() {
                   <p className="font-semibold text-black mb-2">
                     Apoyo de Gobiernos e Instituciones:
                   </p>
-                  <div className="flex gap-4 items-center flex-wrap">
-                    <span className="text-xs font-semibold">FRANCE</span>
-                    <span className="text-xs font-semibold">AMAZONÍA</span>
-                    <span className="text-xs font-semibold">SUECIA</span>
-                    <span className="text-xs font-semibold">CLIMATE</span>
-                  </div>
+                  
+                <div className="flex gap-4 items-center flex-wrap mt-3">
+                  <img src="/img/logos2.svg" alt="Supporting organizations" className="h-8" />
+                </div>
                 </div>
 
                 <p className="text-sm text-gray-600 leading-relaxed">
