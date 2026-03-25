@@ -38,7 +38,7 @@ export default function Sidebar({
       className="fixed left-0 top-0 h-full z-40 bg-white border-r border-gray-100 flex flex-col overflow-hidden"
       style={{ paddingTop: 24, paddingBottom: 24 }}
     >
-      /* Logo + toggle */}
+      {/* Logo + toggle */}
         <div className="relative flex items-center justify-center px-5 mb-8" style={{ minHeight: 48 }}>
           <AnimatePresence mode="wait">
             {!collapsed ? (
