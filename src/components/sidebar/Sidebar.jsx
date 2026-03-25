@@ -38,39 +38,43 @@ export default function Sidebar({
       className="fixed left-0 top-0 h-full z-40 bg-white border-r border-gray-100 flex flex-col overflow-hidden"
       style={{ paddingTop: 24, paddingBottom: 24 }}
     >
-      {/* Logo + toggle */}
-      <div className="relative flex items-center justify-center px-5 mb-8" style={{ minHeight: 48 }}>
-        <AnimatePresence mode="wait">
-          {!collapsed ? (
-            <motion.div key="logo-full" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex justify-center flex-1">
+      /* Logo + toggle */}
+        <div className="relative flex items-center justify-center px-5 mb-8" style={{ minHeight: 48 }}>
+          <AnimatePresence mode="wait">
+            {!collapsed ? (
+          <motion.div key="logo-full" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex justify-center flex-1">
+            <a href="https://www.naturatech.org/guardianes" target="_blank" rel="noopener noreferrer">
               <img
-                src="https://media.base44.com/images/public/69bc1d66f587e6c886c40dd3/d919161da_100logo.png"
-                alt="Logo"
-                className="h-10 w-auto object-contain"
+            src="https://media.base44.com/images/public/69bc1d66f587e6c886c40dd3/d919161da_100logo.png"
+            alt="Logo"
+            className="h-10 w-auto object-contain"
               />
-            </motion.div>
-          ) : (
-            <motion.div key="logo-icon" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            </a>
+          </motion.div>
+            ) : (
+          <motion.div key="logo-icon" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}>
+            <a href="https://www.naturatech.org/guardianes" target="_blank" rel="noopener noreferrer">
               <img
-                src="https://media.base44.com/images/public/69bc1d66f587e6c886c40dd3/d919161da_100logo.png"
-                alt="Logo"
-                className="h-7 w-auto object-contain"
+            src="https://media.base44.com/images/public/69bc1d66f587e6c886c40dd3/d919161da_100logo.png"
+            alt="Logo"
+            className="h-7 w-auto object-contain"
               />
-            </motion.div>
-          )}
-        </AnimatePresence>
-        <button
-          onClick={onToggle}
-          className="absolute right-4 w-7 h-7 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
-        >
-          {collapsed
-            ? <ChevronRight className="w-4 h-4 text-gray-500" />
-            : <ChevronLeft className="w-4 h-4 text-gray-500" />
-          }
-        </button>
-      </div>
+            </a>
+          </motion.div>
+            )}
+          </AnimatePresence>
+          <button
+            onClick={onToggle}
+            className="absolute right-4 w-7 h-7 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
+          >
+            {collapsed
+          ? <ChevronRight className="w-4 h-4 text-gray-500" />
+          : <ChevronLeft className="w-4 h-4 text-gray-500" />
+            }
+          </button>
+        </div>
 
-      {/* Search */}
+        {/* Search */}
       <div className="px-4 mb-6">
         {!collapsed ? (
           <div className="relative">
