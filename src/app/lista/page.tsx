@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Image from "next/image";
+import FilterButton from "@/components/FilterButton";
 
 const guardians = [
   { id: 1, name: "Bryan Ruiz",     role: "Head of creative • CMinds",   country: "COLOMBIA",  image: "/ASSETS/guard1.png" },
@@ -16,9 +17,21 @@ const guardians = [
 ];
 
 const filters = [
-  { label: "Bioregion", icon: "🌐" },
-  { label: "Liderazgo", icon: "🛡" },
-  { label: "Enfoque",   icon: "◎" },
+  {
+    label: "Bioregion",
+    icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width={18} height={18}><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>,
+    options: ["Cuenca amazónica", "Región Mar Caribe", "Cordillera de los Andes", "Sabanas del cerrado", "Pastizales de la Pampa", "Bosque Seco del Chaco", "Corredor Mesoamericano", "Estepa Patagónica"],
+  },
+  {
+    label: "Liderazgo",
+    icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width={18} height={18}><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>,
+    options: ["Comunitario", "Político", "Científico", "Empresarial", "Cultural", "Juvenil", "Indígena", "Religioso"],
+  },
+  {
+    label: "Enfoque",
+    icon: <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" width={18} height={18}><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="4"/></svg>,
+    options: ["Biodiversidad", "Agua", "Suelo", "Clima", "Bosques", "Océanos", "Agricultura", "Energía"],
+  },
 ];
 
 const PIXEL_POSITIONS = [
@@ -33,14 +46,8 @@ const PIXEL_POSITIONS = [
 ];
 
 export default function ListaPage() {
-  const [selectedId, setSelectedId]         = useState<number>(1);
-  const [search, setSearch]                 = useState("");
-  const [activeFilters, setActiveFilters]   = useState<string[]>([]);
-
-  const toggleFilter = (label: string) =>
-    setActiveFilters((prev) =>
-      prev.includes(label) ? prev.filter((f) => f !== label) : [...prev, label]
-    );
+  const [selectedId, setSelectedId] = useState<number>(1);
+  const [search, setSearch]         = useState("");
 
   const filtered = guardians.filter((g) =>
     g.name.toLowerCase().includes(search.toLowerCase()) ||
@@ -81,22 +88,15 @@ export default function ListaPage() {
           {/* Filters */}
           <div style={styles.filtersSection}>
             <span style={styles.filtersLabel}>Filtrar por</span>
-            {filters.map((f) => {
-              const active = activeFilters.includes(f.label);
-              return (
-                <button
-                  key={f.label}
-                  onClick={() => toggleFilter(f.label)}
-                  style={{ ...styles.filterBtn, ...(active ? styles.filterBtnActive : {}) }}
-                >
-                  <span style={styles.filterBtnLeft}>
-                    <span>{f.icon}</span>
-                    <span>{f.label}</span>
-                  </span>
-                  <span style={styles.filterCount}>10</span>
-                </button>
-              );
-            })}
+            {filters.map((f) => (
+              <FilterButton
+                key={f.label}
+                icon={f.icon}
+                label={f.label}
+                count={10}
+                options={f.options}
+              />
+            ))}
           </div>
         </div>
 
