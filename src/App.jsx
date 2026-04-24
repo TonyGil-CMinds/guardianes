@@ -6,6 +6,7 @@ import PageNotFound from './lib/PageNotFound';
 import { AuthProvider, useAuth } from '@/lib/AuthContext';
 import UserNotRegisteredError from '@/components/UserNotRegisteredError';
 import Visor from './pages/Visor';
+import NominationForm from './pages/NominationForm';
 // Add page imports here
 
 const AuthenticatedApp = () => {
@@ -36,6 +37,7 @@ const AuthenticatedApp = () => {
     <Routes>
       <Route path="/" element={<Navigate to="/visor" replace />} />
       <Route path="/visor" element={<Visor />} />
+      <Route path="/nominar" element={<NominationForm />} />
       <Route path="*" element={<PageNotFound />} />
     </Routes>
   );

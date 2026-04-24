@@ -1,11 +1,11 @@
 import React, { useState, useMemo, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import gsap from "gsap";
+import { useNavigate } from "react-router-dom";
 import Sidebar from "@/components/sidebar/Sidebar";
 import GuardianGrid from "@/components/cards/GuardianGrid";
 import GuardianNetworkMap from "@/components/map/GuardianNetworkMap";
 import { fetchGuardians } from "@/api/guardiansData";
-import { toast } from "sonner";
 import { Loader2 } from "lucide-react";
 
 const SIDEBAR_EXPANDED = 256;
@@ -40,6 +40,7 @@ const PageTransition = () => {
 };
 
 export default function Visor() {
+  const navigate = useNavigate();
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
   const [activeCategory, setActiveCategory] = useState(null);
@@ -71,8 +72,7 @@ export default function Visor() {
   }, [guardians, searchQuery, activeCategory]);
 
   const handleShare = () => {
-    navigator.clipboard.writeText(window.location.href);
-    toast.success("Enlace copiado al portapapeles");
+    navigate("/nominar");
   };
 
   return (

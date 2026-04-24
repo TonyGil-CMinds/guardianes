@@ -1,42 +1,51 @@
 # guardianes
 
-**Welcome to your Base44 project** 
+App frontend construida con `Vite + React + Tailwind + Base44`.
 
-**About**
+## Desarrollo local
 
-View and Edit your app on [Base44.com](http://Base44.com)
+1. Instala dependencias con `npm install`
+2. Crea un archivo `.env.local` a partir de `.env.example`
+3. Completa al menos estas variables:
 
-This project contains everything you need to run your app locally.
-
-**Edit the code in your local development environment**
-
-Any change pushed to the repo will also be reflected in the Base44 Builder.
-
-**Prerequisites:**
-
-1. Clone the repository using the project's Git URL
-2. Navigate to the project directory
-3. Install dependencies: `npm install`
-4. Create an `.env.local` file and set the right environment variables
-
-```
+```env
 VITE_BASE44_APP_ID=your_app_id
-VITE_BASE44_APP_BASE_URL=your_backend_url
-
-e.g.
-VITE_BASE44_APP_ID=cbef744a8545c389ef439ea6
-VITE_BASE44_APP_BASE_URL=https://my-to-do-list-81bfaad7.base44.app
+VITE_BASE44_APP_BASE_URL=https://your-base44-app.base44.app
 ```
 
-Run the app: `npm run dev`
+4. Ejecuta `npm run dev`
 
-**Publish your changes**
+## Deploy en Vercel
 
-Open [Base44.com](http://Base44.com) and click on Publish.
+Este repo ya incluye:
 
-**Docs & Support**
+- `vercel.json` con configuración para Vite
+- rewrite SPA para que rutas como `/visor` y `/nominar` funcionen en producción
+- `.env.example` con las variables necesarias
 
-Documentation: [https://docs.base44.com/Integrations/Using-GitHub](https://docs.base44.com/Integrations/Using-GitHub)
+### Variables de entorno en Vercel
 
-Support: [https://app.base44.com/support](https://app.base44.com/support)
+Configura estas variables en el proyecto de Vercel:
+
+```env
+VITE_BASE44_APP_ID=
+VITE_BASE44_APP_BASE_URL=
+VITE_BASE44_FUNCTIONS_VERSION=
+BASE44_LEGACY_SDK_IMPORTS=false
+```
+
+### Build settings
+
+- Framework Preset: `Vite`
+- Build Command: `npm run build`
+- Output Directory: `dist`
+
+## Verificación rápida
+
+- `npm run lint`
+- `npm run build`
+
+## Base44
+
+Documentación: [https://docs.base44.com/Integrations/Using-GitHub](https://docs.base44.com/Integrations/Using-GitHub)
 

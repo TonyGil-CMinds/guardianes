@@ -174,7 +174,7 @@ export default function Sidebar({
             style={{ padding: "20px 24px", gap: 12, background: "#aaff00" }}
           >
             <span style={{ fontSize: 20, color: "#0f2d0f", lineHeight: 1.2, fontWeight: 700 }}>
-              Compartir
+              Nominar Guardian
             </span>
             <Share2 className="w-5 h-5" style={{ color: "#0f2d0f" }} />
           </button>
